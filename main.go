@@ -39,7 +39,7 @@ func (req AddToClusterMessage) String() string {
 }
 
 func main() {
-	makeMasterOnError := flag.Bool("makeMasterOnError", false, "make this node master if unable to connect to the cluster ip provided.")
+	makeMasterOnError := flag.Bool("makeMasterOnError", true, "make this node master if unable to connect to the cluster ip provided.")
 	clusterip := flag.String("clusterip", "127.0.0.1:8001", "ip address of any node to connnect")
 	myport := flag.String("myport", "8001", "ip address to run this node on. default is 8001.")
 	flag.Parse()
@@ -97,6 +97,7 @@ func connectToCluster(me NodeInfo, dest NodeInfo) bool {
 
 //发送请求时格式化json包有用的工具
 func getAddToClusterMessage(source NodeInfo, dest NodeInfo, message string) AddToClusterMessage {
+	fmt.Println("*********",dest)
 	return AddToClusterMessage{
 		Source: NodeInfo{
 			NodeId:     source.NodeId,
@@ -119,6 +120,7 @@ func listenOnPort(me NodeInfo) {
 	//接受连接
 	for {
 		connIn, err := ln.Accept()
+		fmt.Println("ln accept")
 		if err != nil {
 			if _, ok := err.(net.Error); ok {
 				fmt.Println("Error received while listening.", me.NodeId)
